@@ -1,0 +1,97 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local rootPart = character:WaitForChild("HumanoidRootPart")
+
+-- ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "DeltaHub"
+screenGui.Parent = game:GetService("CoreGui") -- بدل PlayerGui عشان يشتغل مع المحرك
+
+-- Hub Frame
+local hubFrame = Instance.new("Frame")
+hubFrame.Size = UDim2.new(0, 250, 0, 300)
+hubFrame.Position = UDim2.new(0.5, -125, 0.5, -150)
+hubFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+hubFrame.Visible = false
+hubFrame.Active = true
+hubFrame.Draggable = true
+hubFrame.Parent = screenGui
+
+-- زر إظهار/إخفاء
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 100, 0, 50)
+toggleButton.Position = UDim2.new(0, 10, 0, 10)
+toggleButton.Text = "Hub"
+toggleButton.Parent = screenGui
+
+toggleButton.MouseButton1Click:Connect(function()
+	hubFrame.Visible = not hubFrame.Visible
+end)
+
+-- زر حفظ المكان
+local savedPosition = nil
+local saveButton = Instance.new("TextButton")
+saveButton.Size = UDim2.new(0, 200, 0, 40)
+saveButton.Position = UDim2.new(0, 25, 0, 50)
+saveButton.Text = "حفظ المكان"
+saveButton.Parent = hubFrame
+
+saveButton.MouseButton1Click:Connect(function()
+	savedPosition = rootPart.Position
+	game.StarterGui:SetCore("SendNotification", {
+		Title = "Delta Hub",
+		Text = "تم حفظ المكان ✅",
+		Duration = 3
+	})
+end)
+
+-- زر الانتقال للبيت
+local teleportButton = Instance.new("TextButton")
+teleportButton.Size = UDim2.new(0, 200, 0, 40)
+teleportButton.Position = UDim2.new(0, 25, 0, 100)
+teleportButton.Text = "الانتقال للبيت"
+teleportButton.Parent = hubFrame
+
+teleportButton.MouseButton1Click:Connect(function()
+	if savedPosition then
+		rootPart.CFrame = CFrame.new(savedPosition)
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Delta Hub",
+			Text = "تم الانتقال ✅",
+			Duration = 3
+		})
+	else
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Delta Hub",
+			Text = "⚠️ لم يتم حفظ المكان بعد!",
+			Duration = 3
+		})
+	end
+end)
+
+-- زر السرعة
+local speedButton = Instance.new("TextButton")
+speedButton.Size = UDim2.new(0, 200, 0, 40)
+speedButton.Position = UDim2.new(0, 25, 0, 150)
+speedButton.Text = "سرعة"
+speedButton.Parent = hubFrame
+
+speedButton.MouseButton1Click:Connect(function()
+	humanoid.WalkSpeed = 50
+	wait(5)
+	humanoid.WalkSpeed = 16
+end)
+
+-- زر القفز العالي
+local jumpButton = Instance.new("TextButton")
+jumpButton.Size = UDim2.new(0, 200, 0, 40)
+jumpButton.Position = UDim2.new(0, 25, 0, 200)
+jumpButton.Text = "قفز عالي"
+jumpButton.Parent = hubFrame
+
+jumpButton.MouseButton1Click:Connect(function()
+	humanoid.JumpPower = 150
+	wait(5)
+	humanoid.JumpPower = 50
+end)
